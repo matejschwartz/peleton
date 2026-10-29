@@ -1,0 +1,90 @@
+---
+import { BIKE_VIEWBOX, CAR_VIEWBOX, bikeMark, carMark } from '../brand/marks.mjs';
+
+interface Props {
+  variant: 'sport' | 'mototechna';
+  /** Colour scheme of the surface the logo sits on */
+  tone?: 'light' | 'dark';
+  size?: 'md' | 'lg';
+  class?: string;
+}
+
+const { variant, tone = 'light', size = 'md', class: className } = Astro.props;
+const isSport = variant === 'sport';
+const sub = isSport ? 'Šport · Bicykle · Servis' : 'Mototechna · Autodiely';
+---
+
+<span class:list={['logo', `logo--${tone}`, `logo--${size}`, className]}>
+  <svg
+    class="logo__mark"
+    viewBox={isSport ? BIKE_VIEWBOX : CAR_VIEWBOX}
+    aria-hidden="true"
+    focusable="false"
+    set:html={isSport ? bikeMark() : carMark()}
+  />
+  <span class="logo__text">
+    <span class="logo__name">Peleton</span>
+    <span class="logo__sub">{sub}</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .logo--dark {
+    color: var(--on-dark);
+  }
+
+  .logo__mark {
+    width: 58px;
+    height: auto;
+    flex: none;
+  }
+
+  .logo__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .logo__name {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .logo__sub {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    white-space: nowrap;
+  }
+
+  .logo--dark .logo__sub {
+    color: var(--accent);
+  }
+
+  .logo--lg .logo__mark {
+    width: 104px;
+  }
+
+  .logo--lg .logo__name {
+    font-size: 3rem;
+  }
+
+  .logo--lg .logo__sub {
+    font-size: 1rem;
+  }
+</style>

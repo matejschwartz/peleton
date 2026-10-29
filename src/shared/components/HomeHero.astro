@@ -1,0 +1,131 @@
+---
+import { Navigation, Phone } from '@lucide/astro';
+import OpeningHours from './OpeningHours.astro';
+import { BIKE_VIEWBOX, CAR_VIEWBOX, bikeMark, carMark } from '../brand/marks.mjs';
+import { type Business, fullAddress, mapsDirectionsUrl } from '../data/business';
+
+interface Props {
+  business: Business;
+  eyebrow: string;
+  lead: string;
+}
+
+const { business, eyebrow, lead } = Astro.props;
+const isSport = business.key === 'sport';
+---
+
+<section class="hero">
+  <div class="speed-lines" aria-hidden="true"></div>
+  <svg
+    class="hero__mark"
+    viewBox={isSport ? BIKE_VIEWBOX : CAR_VIEWBOX}
+    aria-hidden="true"
+    focusable="false"
+    set:html={isSport ? bikeMark('rgb(255 255 255 / 0.07)', 'rgb(255 255 255 / 0.12)') : carMark('rgb(255 255 255 / 0.07)', 'rgb(255 255 255 / 0.12)')}
+  />
+
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1><slot name="title" /></h1>
+      <p class="lead">{lead}</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href={`tel:${business.phones[0].tel}`}>
+          <Phone size={20} aria-hidden="true" />
+          Zavolať {business.phones[0].display}
+        </a>
+        <a class="btn btn--ghost" href="#kontakt">
+          <Navigation size={18} aria-hidden="true" />
+          Kde nás nájdete
+        </a>
+      </div>
+    </div>
+
+    <aside class="hero__card" aria-label="Dnes v predajni">
+      <h2 class="hero__card-title">Dnes v predajni</h2>
+      <OpeningHours business={business} tone="dark" />
+      <a class="hero__address" href={mapsDirectionsUrl(business)} target="_blank" rel="noopener">
+        {fullAddress(business)}
+      </a>
+      <slot name="card" />
+    </aside>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(1200px 500px at 85% -10%, rgb(255 255 255 / 0.06), transparent 60%),
+      var(--ink);
+    color: var(--on-dark);
+    padding-block: clamp(56px, 9vw, 120px) clamp(56px, 8vw, 104px);
+  }
+
+  .hero__mark {
+    position: absolute;
+    right: -6%;
+    bottom: -14%;
+    width: min(760px, 70vw);
+    pointer-events: none;
+  }
+
+  .hero__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .hero h1 {
+    margin-bottom: 0.35em;
+  }
+
+  .hero h1 :global(em) {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero .lead {
+    max-width: 620px;
+    margin-bottom: 32px;
+    color: #d7dbdf;
+  }
+
+  .hero__card {
+    padding: clamp(22px, 3vw, 30px);
+    border: 1px solid var(--ink-3);
+    border-radius: var(--radius-lg);
+    background: rgb(35 40 45 / 0.85);
+    backdrop-filter: blur(6px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero__card-title {
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    color: var(--on-dark-muted);
+  }
+
+  .hero__address {
+    display: block;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ink-3);
+    color: var(--on-dark);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .hero__address:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 900px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

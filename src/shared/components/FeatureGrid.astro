@@ -1,0 +1,62 @@
+---
+import type { AstroComponent } from '@lucide/astro';
+
+export interface Feature {
+  icon: AstroComponent;
+  title: string;
+  text: string;
+}
+
+interface Props {
+  items: Feature[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="features grid grid--4">
+  {
+    items.map(({ icon: Icon, title, text }) => (
+      <li class="card feature">
+        <span class="feature__icon">
+          <Icon size={26} aria-hidden="true" />
+        </span>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .features {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .feature {
+    padding: 26px 24px;
+  }
+
+  .feature__icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .feature h3 {
+    font-size: 1.45rem;
+    text-transform: uppercase;
+  }
+
+  .feature p {
+    margin: 0;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import PageHero from '../../../shared/components/PageHero.astro';
+import CategoryGroups from '../../../shared/components/CategoryGroups.astro';
+import CallBand from '../../../shared/components/CallBand.astro';
+import { mototechna } from '../../../shared/data/business';
+import { breadcrumbJsonLd } from '../../../shared/data/seo';
+import { mototechnaSite } from '../../../shared/data/sites';
+import { groups } from '../data/sortiment';
+
+const title = 'Sortiment autodielov a náradia | Mototechna Peleton Handlová';
+const description =
+  'Autodiely v Handlovej: oleje, filtre, remene, rozvody, brzdy, tlmiče, spojky, batérie, svetlá, sklá, pneumatiky, autokozmetika, náradie a záhradná technika.';
+---
+
+<ShopLayout
+  site={mototechnaSite}
+  title={title}
+  description={description}
+  jsonLd={breadcrumbJsonLd(mototechna.url, [
+    { name: 'Úvod', path: '/' },
+    { name: 'Sortiment', path: '/sortiment/' },
+  ])}
+>
+  <PageHero
+    eyebrow="Sortiment"
+    title="Autodiely a autopríslušenstvo"
+    lead="Prehľad toho, čo nájdete v predajni. Ostatný sortiment u nás na predajni – a čo nemáme, radi objednáme."
+    crumbs={[{ href: '/', label: 'Úvod' }]}
+  />
+
+  <CategoryGroups groups={groups} />
+
+  <CallBand
+    business={mototechna}
+    title="Hľadáte konkrétny diel?"
+    text="Zavolajte nám s typom auta a rokom výroby – overíme dostupnosť a diel pripravíme alebo objednáme."
+  />
+</ShopLayout>

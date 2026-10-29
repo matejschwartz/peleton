@@ -1,0 +1,137 @@
+---
+import { CarFront, CreditCard, Disc3, Wrench } from '@lucide/astro';
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import PageHero from '../../../shared/components/PageHero.astro';
+import CallBand from '../../../shared/components/CallBand.astro';
+import VisitSection from '../../../shared/components/VisitSection.astro';
+import { mototechna } from '../../../shared/data/business';
+import { breadcrumbJsonLd } from '../../../shared/data/seo';
+import { mototechnaSite } from '../../../shared/data/sites';
+import { mountingServices, repairServices, tyreServices } from '../data/sortiment';
+
+const title = 'Autoservis, montáž a pneuservis Handlová | Mototechna';
+const description =
+  'Opravy áut, montáž ťažných zariadení, parkovacích senzorov, alarmov a autorádií. Prezúvanie a vyváženie kolies, oprava defektov – Mototechna Peleton, Handlová.';
+
+const blocks = [
+  {
+    icon: CarFront,
+    title: 'Opravy áut',
+    text: 'Opravíme vaše auto – diely máme priamo na predajni alebo ich rýchlo objednáme.',
+    items: [...repairServices, 'a ďalšie podľa dohody'],
+  },
+  {
+    icon: Wrench,
+    title: 'Montáž príslušenstva',
+    text: 'Príslušenstvo vám odborne namontujeme.',
+    items: [...mountingServices, 'a ďalšie podľa dohody'],
+  },
+  {
+    icon: Disc3,
+    title: 'Pneuservis',
+    text: 'Postaráme sa o vaše kolesá pri sezónnej výmene aj pri defekte.',
+    items: [...tyreServices, 'a ďalšie podľa dohody'],
+  },
+];
+---
+
+<ShopLayout
+  site={mototechnaSite}
+  title={title}
+  description={description}
+  jsonLd={[
+    breadcrumbJsonLd(mototechna.url, [
+      { name: 'Úvod', path: '/' },
+      { name: 'Servis a montáž', path: '/sluzby/' },
+    ]),
+    ...blocks.map((b) => ({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType: b.title,
+      provider: { '@id': `${mototechna.url}/#business` },
+      areaServed: { '@type': 'City', name: 'Handlová' },
+      description: `${b.title}: ${b.items.slice(0, -1).join(', ')}.`,
+    })),
+  ]}
+>
+  <PageHero
+    eyebrow="Servis a montáž"
+    title="Opravy áut, montáž a pneuservis"
+    lead="Diel u nás nielen kúpite – auto vám opravíme, príslušenstvo namontujeme a postaráme sa o vaše kolesá."
+    crumbs={[{ href: '/', label: 'Úvod' }]}
+  />
+
+  <section class="section">
+    <div class="container grid grid--3">
+      {
+        blocks.map(({ icon: Icon, title, text, items }, i) => (
+          <section class="card service" aria-labelledby={`svc-${i}`}>
+            <span class="service__icon">
+              <Icon size={28} aria-hidden="true" />
+            </span>
+            <h2 id={`svc-${i}`}>{title}</h2>
+            <p>{text}</p>
+            <ul class="check-list">
+              {items.map((i) => (
+                <li>{i}</li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+    <div class="container">
+      <p class="pay">
+        <CreditCard size={22} aria-hidden="true" />
+        V predajni ponúkame aj splátkový predaj.
+      </p>
+    </div>
+  </section>
+
+  <CallBand
+    business={mototechna}
+    title="Dohodnite si termín"
+    text="Zavolajte nám a dohodneme termín montáže alebo prezutia, ktorý vám vyhovuje."
+  />
+
+  <VisitSection business={mototechna} />
+</ShopLayout>
+
+<style>
+  .service {
+    padding: clamp(24px, 3.5vw, 40px);
+  }
+
+  .service__icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .service h2 {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+  }
+
+  .service p {
+    color: var(--muted);
+  }
+
+  .service .check-list {
+    margin-top: 20px;
+    font-size: 1.1rem;
+  }
+
+  .pay {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: clamp(24px, 3vw, 40px) 0 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+</style>

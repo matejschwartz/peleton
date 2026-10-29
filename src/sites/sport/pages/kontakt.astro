@@ -1,0 +1,32 @@
+---
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import PageHero from '../../../shared/components/PageHero.astro';
+import VisitSection from '../../../shared/components/VisitSection.astro';
+import { localBusinessJsonLd, sport } from '../../../shared/data/business';
+import { breadcrumbJsonLd, contactDescription } from '../../../shared/data/seo';
+import { sportSite } from '../../../shared/data/sites';
+
+const title = 'Kontakt a otváracie hodiny | Šport Peleton Handlová';
+const description = contactDescription(sport);
+---
+
+<ShopLayout
+  site={sportSite}
+  title={title}
+  description={description}
+  jsonLd={[
+    localBusinessJsonLd(sport),
+    breadcrumbJsonLd(sport.url, [
+      { name: 'Úvod', path: '/' },
+      { name: 'Kontakt', path: '/kontakt/' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Kontakt"
+    title="Kontakt a otváracie hodiny"
+    lead="Nájdete nás v Mestskej tržnici v Handlovej. Zavolajte, napíšte e-mail alebo správu cez Messenger."
+    crumbs={[{ href: '/', label: 'Úvod' }]}
+  />
+  <VisitSection business={sport} title="Kde nás nájdete" />
+</ShopLayout>

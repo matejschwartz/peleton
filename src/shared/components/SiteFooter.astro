@@ -1,0 +1,210 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+import ContactList from './ContactList.astro';
+import Logo from './Logo.astro';
+import OpeningHours from './OpeningHours.astro';
+import SocialIcon from './SocialIcon.astro';
+import { mototechna, sport } from '../data/business';
+import type { SiteConfig } from '../data/sites';
+
+interface Props {
+  site: SiteConfig;
+}
+
+const { site } = Astro.props;
+const business = site.business!;
+const isSport = site.key === 'sport';
+const sibling = isSport
+  ? { business: mototechna, title: 'Mototechna Peleton', text: 'Autodiely, náradie, opravy áut, montáž a pneuservis – ul. ČSA, Handlová.' }
+  : { business: sport, title: 'Šport Peleton', text: 'Bicykle, servis bicyklov, brúsenie korčúľ a športové potreby – Mestská tržnica, Handlová.' };
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <Logo variant={isSport ? 'sport' : 'mototechna'} tone="dark" />
+        <p>
+          {
+            isSport
+              ? 'Predajňa bicyklov, športových potrieb a servis bicyklov v Handlovej od roku 2000.'
+              : 'Najväčšia predajňa autodielov v Handlovej a širšom okolí.'
+          }
+        </p>
+        <div class="footer__social">
+          {
+            business.facebook && (
+              <a href={business.facebook} target="_blank" rel="noopener" aria-label="Facebook">
+                <SocialIcon name="facebook" />
+              </a>
+            )
+          }
+          {
+            business.messenger && (
+              <a href={business.messenger} target="_blank" rel="noopener" aria-label="Messenger">
+                <SocialIcon name="messenger" />
+              </a>
+            )
+          }
+        </div>
+      </div>
+
+      <div>
+        <h2 class="footer__title">Kontakt</h2>
+        <ContactList business={business} tone="dark" compact />
+      </div>
+
+      <div>
+        <h2 class="footer__title">Otváracie hodiny</h2>
+        <OpeningHours business={business} tone="dark" compact />
+      </div>
+
+      <div>
+        <h2 class="footer__title">Navigácia</h2>
+        <ul class="footer__links">
+          {site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+        <a class="footer__sibling" href={`${sibling.business.url}/`}>
+          <span class="footer__sibling-label">Ďalšia predajňa Peleton</span>
+          <strong>
+            {sibling.title}
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </strong>
+          <span>{sibling.text}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© {year} {business.name}, {business.address.city}</span>
+      <a href="https://peleton.sk/">peleton.sk</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: var(--on-dark);
+    padding-top: clamp(48px, 7vw, 80px);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.2fr 1fr 1fr;
+    gap: clamp(28px, 4vw, 48px);
+  }
+
+  .footer__brand p {
+    margin-top: 18px;
+    color: var(--on-dark-muted);
+  }
+
+  .footer__social {
+    display: flex;
+    gap: 10px;
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--ink-2);
+    color: var(--on-dark);
+    transition: color 0.15s ease;
+  }
+
+  .footer__social a:hover {
+    color: var(--accent);
+  }
+
+  .footer__title {
+    margin-bottom: 18px;
+    font-size: 1.15rem;
+    letter-spacing: 0.12em;
+    color: var(--on-dark-muted);
+  }
+
+  .footer__links {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__links a {
+    color: var(--on-dark);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .footer__links a:hover {
+    color: var(--accent);
+  }
+
+  .footer__sibling {
+    display: grid;
+    gap: 4px;
+    padding: 16px 18px;
+    border: 1px solid var(--ink-3);
+    border-radius: var(--radius);
+    background: var(--ink-2);
+    color: var(--on-dark-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease;
+  }
+
+  .footer__sibling:hover {
+    border-color: var(--on-dark-muted);
+  }
+
+  .footer__sibling strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--on-dark);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+  }
+
+  .footer__sibling-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: clamp(40px, 6vw, 64px);
+    padding-block: 24px;
+    border-top: 1px solid var(--ink-3);
+    color: var(--on-dark-muted);
+    font-size: 0.9rem;
+  }
+
+  .footer__bottom a {
+    color: inherit;
+  }
+
+  @media (max-width: 1060px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

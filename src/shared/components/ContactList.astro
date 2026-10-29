@@ -1,0 +1,136 @@
+---
+import { Mail, MapPin, Phone, Smartphone } from '@lucide/astro';
+import SocialIcon from './SocialIcon.astro';
+import { type Business, fullAddress, mapsDirectionsUrl } from '../data/business';
+
+interface Props {
+  business: Business;
+  tone?: 'light' | 'dark';
+  /** Leave out the Facebook / Messenger rows */
+  compact?: boolean;
+}
+
+const { business, tone = 'light', compact = false } = Astro.props;
+---
+
+<ul class:list={['contact', `contact--${tone}`]}>
+  <li>
+    <span class="contact__icon"><MapPin size={20} aria-hidden="true" /></span>
+    <span>
+      <span class="contact__label">Adresa</span>
+      <a href={mapsDirectionsUrl(business)} target="_blank" rel="noopener">{fullAddress(business)}</a>
+    </span>
+  </li>
+  {
+    business.phones.map((p) => (
+      <li>
+        <span class="contact__icon">
+          {p.tel.startsWith('+4219') ? <Smartphone size={20} aria-hidden="true" /> : <Phone size={20} aria-hidden="true" />}
+        </span>
+        <span>
+          <span class="contact__label">{p.label}</span>
+          <a href={`tel:${p.tel}`}>{p.display}</a>
+        </span>
+      </li>
+    ))
+  }
+  <li>
+    <span class="contact__icon"><Mail size={20} aria-hidden="true" /></span>
+    <span>
+      <span class="contact__label">E-mail</span>
+      <a href={`mailto:${business.email}`}>{business.email}</a>
+    </span>
+  </li>
+  {
+    !compact && business.facebook && (
+      <li>
+        <span class="contact__icon">
+          <SocialIcon name="facebook" size={20} />
+        </span>
+        <span>
+          <span class="contact__label">Facebook</span>
+          <a href={business.facebook} target="_blank" rel="noopener">
+            {business.facebook.replace(/^https?:\/\/(www\.)?/, '')}
+          </a>
+        </span>
+      </li>
+    )
+  }
+  {
+    !compact && business.messenger && (
+      <li>
+        <span class="contact__icon">
+          <SocialIcon name="messenger" size={20} />
+        </span>
+        <span>
+          <span class="contact__label">Messenger</span>
+          <a href={business.messenger} target="_blank" rel="noopener">
+            Napíšte nám správu
+          </a>
+        </span>
+      </li>
+    )
+  }
+</ul>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .contact__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+
+  .contact__label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .contact a {
+    color: inherit;
+    font-weight: 600;
+    font-size: 1.08rem;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .contact a:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+  }
+
+  .contact--dark .contact__icon {
+    background: var(--ink-2);
+    color: var(--accent);
+  }
+
+  .contact--dark .contact__label {
+    color: var(--on-dark-muted);
+  }
+
+  .contact--dark a:hover {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import NotFound from '../../../shared/components/NotFound.astro';
+import { mototechnaSite } from '../../../shared/data/sites';
+---
+
+<ShopLayout
+  site={mototechnaSite}
+  title="Stránka sa nenašla | Mototechna Peleton"
+  description="Hľadaná stránka neexistuje."
+  noindex
+>
+  <NotFound links={mototechnaSite.nav} />
+</ShopLayout>

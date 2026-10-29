@@ -1,0 +1,14 @@
+---
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import NotFound from '../../../shared/components/NotFound.astro';
+import { sportSite } from '../../../shared/data/sites';
+---
+
+<ShopLayout
+  site={sportSite}
+  title="Stránka sa nenašla | Šport Peleton"
+  description="Hľadaná stránka neexistuje."
+  noindex
+>
+  <NotFound links={sportSite.nav} />
+</ShopLayout>

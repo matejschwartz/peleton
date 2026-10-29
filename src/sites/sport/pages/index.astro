@@ -1,0 +1,242 @@
+---
+import { ArrowRight, PackageSearch, Snowflake, Timer, Wrench } from '@lucide/astro';
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import HomeHero from '../../../shared/components/HomeHero.astro';
+import FeatureGrid from '../../../shared/components/FeatureGrid.astro';
+import Gallery from '../../../shared/components/Gallery.astro';
+import VisitSection from '../../../shared/components/VisitSection.astro';
+import CallBand from '../../../shared/components/CallBand.astro';
+import { localBusinessJsonLd, sport } from '../../../shared/data/business';
+import { sportSite } from '../../../shared/data/sites';
+import { bikeBrands, groups, partnerBrands } from '../data/sortiment';
+
+import photoMain from '../../../shared/assets/photos/sport/predajna-bicykle-handlova.jpg';
+import photoKids from '../../../shared/assets/photos/sport/predajna-detske-bicykle.jpg';
+import photoTyres from '../../../shared/assets/photos/sport/bicykle-plaste-a-lopty.jpg';
+import photoFitness from '../../../shared/assets/photos/sport/fitness-a-kolobezky.jpg';
+import photoBags from '../../../shared/assets/photos/sport/batohy-a-doplnky.jpg';
+import photoEntrance from '../../../shared/assets/photos/sport/vstup-do-predajne.jpg';
+
+const features = [
+  {
+    icon: Wrench,
+    title: 'Servis bicyklov',
+    text: 'Záručný aj pozáručný servis – aj na bicykle a tovar, ktorý ste u nás nekúpili.',
+  },
+  {
+    icon: Timer,
+    title: 'Rýchloservis do 24 h',
+    text: 'Bežné opravy zvládneme do 24 hodín, prípadne podľa dohody.',
+  },
+  {
+    icon: Snowflake,
+    title: 'Brúsenie korčúľ',
+    text: 'Nabrúsime vaše korčule, aby ste sa na ľade cítili isto.',
+  },
+  {
+    icon: PackageSearch,
+    title: 'Objednáme aj dovezieme',
+    text: 'Čo nemáme v predajni, zoženieme čo najrýchlejšie. Bicykel či fitness stroj vám dovezieme.',
+  },
+];
+
+const photos = [
+  { src: photoMain, alt: 'Bicykle, prilby a oblečenie v predajni Peleton v Handlovej' },
+  { src: photoKids, alt: 'Detské a horské bicykle v predajni Peleton' },
+  { src: photoTyres, alt: 'Bicykle, plášte a lopty v predajni Peleton' },
+  { src: photoFitness, alt: 'Fitness stroje, kolobežky a cyklistické doplnky' },
+  { src: photoBags, alt: 'Batohy, prilby a doplnky pri pokladni predajne Peleton' },
+  { src: photoEntrance, alt: 'Vstup do predajne Šport Peleton v Mestskej tržnici' },
+];
+
+const title = 'Bicykle a servis bicyklov Handlová | Šport Peleton';
+const description =
+  'Bicykle Merida, Giant, Focus a ďalšie, komponenty, prilby a športové potreby v Handlovej. Servis bicyklov, rýchloservis do 24 h, brúsenie korčúľ.';
+---
+
+<ShopLayout
+  site={sportSite}
+  title={title}
+  description={description}
+  jsonLd={localBusinessJsonLd(sport, {
+    description,
+    image: `${sport.url}/og.png`,
+    logo: `${sport.url}/apple-touch-icon.png`,
+    brand: bikeBrands.map((name) => ({ '@type': 'Brand', name })),
+  })}
+>
+  <HomeHero
+    business={sport}
+    eyebrow="Handlová · od roku 2000"
+    lead="Predajňa PELETON – značkové bicykle, komponenty, oblečenie a športové potreby. K tomu servis bicyklov a brúsenie korčúľ, na ktoré sa môžete spoľahnúť."
+  >
+    <Fragment slot="title">Bicykle, servis a&nbsp;<em>šport</em> v&nbsp;Handlovej</Fragment>
+  </HomeHero>
+
+  <section class="section" aria-labelledby="why-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Prečo Peleton</span>
+        <h2 id="why-title">Predaj aj servis na jednom mieste</h2>
+        <p>
+          Naša predajňa funguje od roku 2000 a je známa kvalitou výrobkov a profesionálnym prístupom k zákazníkom aj k
+          servisu.
+        </p>
+      </div>
+      <FeatureGrid items={features} />
+    </div>
+  </section>
+
+  <section class="section section--dark" aria-labelledby="brands-title">
+    <div class="container brands">
+      <div>
+        <span class="eyebrow">Značky</span>
+        <h2 id="brands-title">Bicykle overených značiek</h2>
+        <p class="brands__text">
+          Predávame bicykle značiek, ktoré sa osvedčili kvalitou a spoľahlivosťou, a komponenty a doplnky od
+          renomovaných výrobcov.
+        </p>
+        <a class="btn btn--primary" href="/sortiment/">
+          Celý sortiment
+          <ArrowRight size={20} aria-hidden="true" />
+        </a>
+      </div>
+      <div class="brands__lists">
+        <h3>Bicykle</h3>
+        <ul class="chips">
+          {bikeBrands.map((b) => <li>{b}</li>)}
+          <li class="chips__more">a ďalšie</li>
+        </ul>
+        <h3>Komponenty, výbava a výživa</h3>
+        <ul class="chips">
+          {partnerBrands.map((b) => <li>{b}</li>)}
+          <li class="chips__more">a ďalšie</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="range-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Sortiment</span>
+        <h2 id="range-title">Čo u nás nájdete</h2>
+        <p>Od bicyklov cez náhradné diely až po korčule, fitness a športovú výživu.</p>
+      </div>
+      <ul class="range grid grid--4">
+        {
+          groups.map((g) => (
+            <li>
+              <a class="card range__card" href={`/sortiment/#${g.id}`}>
+                <h3>{g.title}</h3>
+                <p>{g.items.length > 1 ? g.items.map((i) => i.name).join(', ') : g.intro}</p>
+                <span class="range__more">
+                  Zobraziť <ArrowRight size={18} aria-hidden="true" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CallBand
+    business={sport}
+    title="Potrebujete opraviť bicykel?"
+    text="Zavolajte alebo sa zastavte v predajni – dohodneme termín, bežné opravy zvládneme do 24 hodín."
+  />
+
+  <section class="section" aria-labelledby="gallery-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Predajňa</span>
+        <h2 id="gallery-title">Pozrite sa k nám</h2>
+        <p>Nájdete nás v Mestskej tržnici v Handlovej. Na predajni je vždy viac, než sa zmestí na web.</p>
+      </div>
+      <Gallery photos={photos} featureFirst={false} />
+    </div>
+  </section>
+
+  <VisitSection business={sport} />
+</ShopLayout>
+
+<style>
+  .brands {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+  }
+
+  .brands__text {
+    margin-bottom: 28px;
+    color: var(--on-dark-muted);
+    font-size: 1.125rem;
+  }
+
+  .brands__lists h3 {
+    margin: 0 0 14px;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-dark-muted);
+  }
+
+  .brands__lists .chips {
+    margin-bottom: 32px;
+  }
+
+  .brands__lists .chips li {
+    font-size: 1.05rem;
+    padding: 8px 16px;
+  }
+
+  .range {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .range__card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 26px 24px;
+    color: inherit;
+    text-decoration: none;
+    border-top: 4px solid var(--accent);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .range__card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .range__card h3 {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .range__card p {
+    color: var(--muted);
+  }
+
+  .range__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .brands {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,251 @@
+---
+import { type Business, hoursSummary, shortTime } from '../data/business';
+
+interface Props {
+  business: Business;
+  tone?: 'light' | 'dark';
+  /** Merged rows ("Po – Pi") instead of one row per day */
+  compact?: boolean;
+}
+
+const { business, tone = 'light', compact = false } = Astro.props;
+const schedule = JSON.stringify(
+  business.hours.map((h) => ({ day: h.day, opens: h.opens ?? null, closes: h.closes ?? null })),
+);
+---
+
+<div class:list={['hours', `hours--${tone}`]} data-hours={schedule}>
+  <p class="hours__status" data-status hidden>
+    <span class="hours__dot" aria-hidden="true"></span>
+    <span data-status-text></span>
+  </p>
+
+  {
+    compact && (
+      <dl class="hours__summary">
+        {hoursSummary(business).map((row) => (
+          <div>
+            <dt>{row.days}</dt>
+            <dd>{row.time}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+
+  {
+    !compact && (
+      <table class="hours__table">
+        <caption class="visually-hidden">Otváracie hodiny – {business.name}</caption>
+        <tbody>
+          {business.hours.map((h) => (
+            <tr data-day={h.day}>
+              <th scope="row">{h.label}</th>
+              <td>{h.opens && h.closes ? `${shortTime(h.opens)} – ${shortTime(h.closes)}` : h.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+</div>
+
+<script>
+  const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  type Slot = { day: string; opens: string | null; closes: string | null };
+
+  // Shop time is Slovak local time, regardless of the visitor's timezone
+  function nowInBratislava() {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Bratislava',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+    const day = DAYS[['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'))];
+    return { day, minutes: Number(get('hour')) * 60 + Number(get('minute')) };
+  }
+
+  const toMin = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  };
+  const fmt = (t: string) => t.replace(/^0/, '');
+
+  function nextOpening(schedule: Slot[], fromDay: string) {
+    const start = DAYS.indexOf(fromDay);
+    for (let i = 1; i <= 7; i++) {
+      const day = DAYS[(start + i) % 7];
+      const slot = schedule.find((s) => s.day === day);
+      if (slot?.opens) return { slot, inDays: i };
+    }
+    return null;
+  }
+
+  const dayNames: Record<string, string> = {
+    Mo: 'v pondelok',
+    Tu: 'v utorok',
+    We: 'v stredu',
+    Th: 'vo štvrtok',
+    Fr: 'v piatok',
+    Sa: 'v sobotu',
+    Su: 'v nedeľu',
+  };
+
+  function render() {
+    const { day, minutes } = nowInBratislava();
+    document.querySelectorAll<HTMLElement>('[data-hours]').forEach((el) => {
+      const schedule: Slot[] = JSON.parse(el.dataset.hours ?? '[]');
+      const today = schedule.find((s) => s.day === day);
+      el.querySelectorAll('tr[data-day]').forEach((row) =>
+        row.classList.toggle('is-today', (row as HTMLElement).dataset.day === day),
+      );
+
+      let open = false;
+      let text: string;
+      if (today?.opens && today.closes && minutes >= toMin(today.opens) && minutes < toMin(today.closes)) {
+        open = true;
+        text = `Práve otvorené · do ${fmt(today.closes)}`;
+      } else if (today?.opens && minutes < toMin(today.opens)) {
+        text = `Zatvorené · otvárame dnes o ${fmt(today.opens)}`;
+      } else {
+        const next = nextOpening(schedule, day);
+        text = next
+          ? `Zatvorené · otvárame ${next.inDays === 1 ? 'zajtra' : dayNames[next.slot.day]} o ${fmt(next.slot.opens!)}`
+          : 'Zatvorené';
+      }
+
+      const status = el.querySelector<HTMLElement>('[data-status]');
+      const statusText = el.querySelector<HTMLElement>('[data-status-text]');
+      if (status && statusText) {
+        statusText.textContent = text;
+        status.classList.toggle('is-open', open);
+        status.hidden = false;
+      }
+    });
+  }
+
+  render();
+  setInterval(render, 60_000);
+</script>
+
+<style>
+  .hours__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 16px;
+    padding: 6px 14px 6px 12px;
+    border-radius: 999px;
+    background: #fbe9e9;
+    color: #9b1c1c;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .hours__status.is-open {
+    background: #e3f5e8;
+    color: #146c2e;
+  }
+
+  .hours--dark .hours__status {
+    background: rgb(255 255 255 / 0.08);
+    color: #ffb4b4;
+  }
+
+  .hours--dark .hours__status.is-open {
+    color: #8ee6a8;
+  }
+
+  .hours__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .is-open .hours__dot {
+    box-shadow: 0 0 0 0 currentColor;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    70% {
+      box-shadow: 0 0 0 7px transparent;
+    }
+  }
+
+  .hours__summary {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .hours__summary div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .hours__summary dd {
+    margin: 0;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hours__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .hours__table th {
+    white-space: nowrap;
+  }
+
+  .hours__table th,
+  .hours__table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+
+  .hours__table th {
+    font-weight: 500;
+  }
+
+  .hours__table td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .hours__table tr:last-child th,
+  .hours__table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .hours__table tr.is-today {
+    background: var(--accent-soft);
+  }
+
+  .hours__table tr.is-today th::after {
+    content: ' · dnes';
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  .hours--dark .hours__table th,
+  .hours--dark .hours__table td {
+    border-color: var(--ink-3);
+  }
+
+  .hours--dark .hours__table tr.is-today {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .hours--dark .hours__table tr.is-today th::after {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,261 @@
+---
+import { ArrowRight, CarFront, CreditCard, Disc3, PackageSearch, Wrench } from '@lucide/astro';
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import HomeHero from '../../../shared/components/HomeHero.astro';
+import FeatureGrid from '../../../shared/components/FeatureGrid.astro';
+import Gallery from '../../../shared/components/Gallery.astro';
+import VisitSection from '../../../shared/components/VisitSection.astro';
+import CallBand from '../../../shared/components/CallBand.astro';
+import { localBusinessJsonLd, mototechna } from '../../../shared/data/business';
+import { mototechnaSite } from '../../../shared/data/sites';
+import { groups, mountingServices, repairServices, tyreServices } from '../data/sortiment';
+
+import photoInterior from '../../../shared/assets/photos/mototechna/predajna-autodielov-interier.jpg';
+import photoShelves from '../../../shared/assets/photos/mototechna/regaly-autodiely.jpg';
+import photoEntrance from '../../../shared/assets/photos/mototechna/mototechna-peleton-vchod.jpg';
+import photoStorefront from '../../../shared/assets/photos/mototechna/predajna-mototechna-peleton-handlova.jpg';
+
+const features = [
+  {
+    icon: PackageSearch,
+    title: 'Rýchle dodanie dielov',
+    text: 'Precízne vyhľadáme aj ťažko dostupné diely a dodáme ich v čo najkratšom čase.',
+  },
+  {
+    icon: CarFront,
+    title: 'Opravy áut',
+    text: 'Auto vám opravíme – diely máme priamo na predajni.',
+  },
+  {
+    icon: Wrench,
+    title: 'Montáž príslušenstva',
+    text: 'Ťažné zariadenia, parkovacie senzory, alarmy, autorádiá a ďalšie.',
+  },
+  {
+    icon: Disc3,
+    title: 'Pneuservis',
+    text: 'Prezúvanie a vyváženie kolies, oprava defektov.',
+  },
+];
+
+const photos = [
+  { src: photoInterior, alt: 'Interiér predajne autodielov Mototechna Peleton v Handlovej' },
+  { src: photoShelves, alt: 'Regály s autodielmi a autokozmetikou v predajni Mototechna Peleton' },
+  { src: photoEntrance, alt: 'Vchod do predajne Mototechna Peleton na ulici ČSA v Handlovej' },
+  { src: photoStorefront, alt: 'Výklady predajne Mototechna Peleton na ulici ČSA v Handlovej', full: true },
+];
+
+const title = 'Autodiely a autoservis Handlová – Mototechna Peleton';
+const description =
+  'Najväčšia predajňa autodielov v Handlovej a okolí. Náhradné diely, náradie a záhradná technika, opravy áut, montáž príslušenstva a pneuservis.';
+---
+
+<ShopLayout
+  site={mototechnaSite}
+  title={title}
+  description={description}
+  jsonLd={localBusinessJsonLd(mototechna, {
+    description,
+    image: `${mototechna.url}/og.png`,
+    logo: `${mototechna.url}/apple-touch-icon.png`,
+  })}
+>
+  <HomeHero
+    business={mototechna}
+    eyebrow="Handlová · ul. ČSA"
+    lead="Mototechna Peleton – najväčšia predajňa autodielov v Handlovej a širšom okolí. Rýchle dodanie dielov, opravy áut, montáž príslušenstva aj pneuservis."
+  >
+    <Fragment slot="title">Autodiely a&nbsp;<em>autoservis</em> v&nbsp;Handlovej</Fragment>
+  </HomeHero>
+
+  <section class="section" aria-labelledby="why-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Prečo Mototechna</span>
+        <h2 id="why-title">Diel, ktorý hľadáte, u nás nájdete</h2>
+        <p>
+          Predajňa vznikla 1. 1. 2008 a nadväzuje na dlhoročnú tradíciu pôvodnej mototechny. Odvtedy sme prešli veľkými
+          zmenami – v profesionálnom prístupe k zákazníkom aj vo vybavení predajne.
+        </p>
+      </div>
+      <FeatureGrid items={features} />
+    </div>
+  </section>
+
+  <section class="section section--dark" aria-labelledby="range-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Sortiment</span>
+        <h2 id="range-title">Náhradné diely na všetky typy áut</h2>
+        <p>Od oleja a filtrov cez brzdy a spojky až po batérie, sklá a autokozmetiku. A k tomu náradie a záhradná technika.</p>
+      </div>
+      <ul class="range grid">
+        {
+          groups.map((g) => (
+            <li>
+              <a class="range__card" href={`/sortiment/#${g.id}`}>
+                <h3>{g.title}</h3>
+                <ul class="chips">
+                  {g.items.map((i) => (
+                    <li>{i.name}</li>
+                  ))}
+                </ul>
+                <span class="range__more">
+                  Zobraziť <ArrowRight size={18} aria-hidden="true" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-title">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Servis a montáž</span>
+        <h2 id="services-title">Diel predáme aj namontujeme</h2>
+        <p class="lead">
+          Auto vám opravíme, príslušenstvo, ktoré si u nás kúpite, odborne namontujeme a postaráme sa aj o vaše kolesá.
+        </p>
+        <a class="btn btn--primary" href="/sluzby/">
+          Všetky služby <ArrowRight size={20} aria-hidden="true" />
+        </a>
+      </div>
+      <div class="split__lists">
+        <div class="card split__card split__card--full">
+          <h3>Opravy áut</h3>
+          <ul class="check-list">{repairServices.map((s) => <li>{s}</li>)}</ul>
+        </div>
+        <div class="card split__card">
+          <h3>Montáž</h3>
+          <ul class="check-list">{mountingServices.slice(0, 6).map((s) => <li>{s}</li>)}</ul>
+        </div>
+        <div class="card split__card">
+          <h3>Pneuservis</h3>
+          <ul class="check-list">{tyreServices.map((s) => <li>{s}</li>)}</ul>
+          <p class="split__pay">
+            <CreditCard size={20} aria-hidden="true" />
+            Možnosť splátkového predaja
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CallBand
+    business={mototechna}
+    title="Neviete, aký diel potrebujete?"
+    text="Zavolajte nám s typom auta a rokom výroby – diel nájdeme a pripravíme, alebo objednáme."
+  />
+
+  <section class="section section--white" aria-labelledby="gallery-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Predajňa</span>
+        <h2 id="gallery-title">Pozrite sa k nám</h2>
+        <p>Plné regály dielov a príslušenstva. Príďte sa presvedčiť o našej kvalite.</p>
+      </div>
+      <Gallery photos={photos} />
+    </div>
+  </section>
+
+  <VisitSection business={mototechna} />
+</ShopLayout>
+
+<style>
+  .range {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .range__card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    padding: 26px 24px;
+    border: 1px solid var(--ink-3);
+    border-top: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--ink-2);
+    color: var(--on-dark);
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .range__card:hover {
+    border-color: var(--accent);
+  }
+
+  .range__card h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .range__card .chips li {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    background: var(--ink-3);
+  }
+
+  .range__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: #ff8a8a;
+    font-weight: 600;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .split__lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .split__card {
+    padding: 24px;
+  }
+
+  .split__card--full {
+    grid-column: 1 / -1;
+  }
+
+  .split__card h3 {
+    text-transform: uppercase;
+  }
+
+  .split__pay {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .split__lists {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

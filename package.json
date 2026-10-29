@@ -1,0 +1,32 @@
+{
+  "name": "peleton",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:sport": "node scripts/astro.mjs dev sport",
+    "dev:mototechna": "node scripts/astro.mjs dev mototechna",
+    "dev:hub": "node scripts/astro.mjs dev hub",
+    "build": "node scripts/astro.mjs build all",
+    "build:sport": "node scripts/astro.mjs build sport",
+    "build:mototechna": "node scripts/astro.mjs build mototechna",
+    "build:hub": "node scripts/astro.mjs build hub",
+    "preview:sport": "node scripts/astro.mjs preview sport",
+    "preview:mototechna": "node scripts/astro.mjs preview mototechna",
+    "preview:hub": "node scripts/astro.mjs preview hub",
+    "icons": "node scripts/generate-icons.mjs",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@lucide/astro": "^1.61.0",
+    "astro": "^7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "opentype.js": "^2.0.0",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,123 @@
+---
+import { PackageSearch, Snowflake, Timer, Wrench } from '@lucide/astro';
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import PageHero from '../../../shared/components/PageHero.astro';
+import FeatureGrid from '../../../shared/components/FeatureGrid.astro';
+import CallBand from '../../../shared/components/CallBand.astro';
+import VisitSection from '../../../shared/components/VisitSection.astro';
+import { sport } from '../../../shared/data/business';
+import { breadcrumbJsonLd } from '../../../shared/data/seo';
+import { sportSite } from '../../../shared/data/sites';
+
+const title = 'Servis bicyklov a brúsenie korčúľ Handlová | Peleton';
+const description =
+  'Servis bicyklov v Handlovej: záručné aj pozáručné opravy, rýchloservis do 24 hodín, servis aj bicyklov kúpených inde. Brúsenie korčúľ, náhradné diely skladom.';
+
+const features = [
+  {
+    icon: Wrench,
+    title: 'Záručný aj pozáručný servis',
+    text: 'Opravy a údržba bicyklov aj ďalšieho športového tovaru – aj keď ste ho nekúpili u nás.',
+  },
+  {
+    icon: Timer,
+    title: 'Rýchloservis do 24 h',
+    text: 'Bežné opravy zvládneme do 24 hodín, prípadne podľa dohody.',
+  },
+  {
+    icon: Snowflake,
+    title: 'Brúsenie korčúľ',
+    text: 'Nabrúsime vaše korčule, aby ste sa na ľade cítili isto.',
+  },
+  {
+    icon: PackageSearch,
+    title: 'Diely skladom',
+    text: 'Plášte, duše, reťaze, brzdy, radenia a ďalšie diely máme na predajni. Čo chýba, objednáme.',
+  },
+];
+---
+
+<ShopLayout
+  site={sportSite}
+  title={title}
+  description={description}
+  jsonLd={[
+    breadcrumbJsonLd(sport.url, [
+      { name: 'Úvod', path: '/' },
+      { name: 'Servis', path: '/servis/' },
+    ]),
+    ...['Servis bicyklov', 'Brúsenie korčúľ'].map((serviceType) => ({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType,
+      provider: { '@id': `${sport.url}/#business` },
+      areaServed: { '@type': 'City', name: 'Handlová' },
+    })),
+  ]}
+>
+  <PageHero
+    eyebrow="Servis"
+    title="Servis bicyklov a brúsenie korčúľ"
+    lead="Sme vybavení značkovým servisom pre všetok tovar, ktorý predávame. Opravíme aj bicykel, ktorý ste u nás nekúpili, a nabrúsime vaše korčule."
+    crumbs={[{ href: '/', label: 'Úvod' }]}
+  />
+
+  <section class="section" aria-labelledby="services-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Čo robíme</span>
+        <h2 id="services-title">Servis, na ktorý sa dá spoľahnúť</h2>
+        <p>Od výmeny duše až po kompletnú prehliadku pred sezónou – a v zime nabrúsené korčule.</p>
+      </div>
+      <FeatureGrid items={features} />
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="extra-title">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Navyše</span>
+        <h2 id="extra-title">Poradíme, nastavíme, dovezieme</h2>
+        <p class="lead">
+          Okrem opráv vám pomôžeme vybrať správny bicykel a výbavu, nastavíme sedlo a doplnky na mieru a väčší nákup vám
+          dovezieme.
+        </p>
+      </div>
+      <ul class="check-list">
+        <li>Odborné poradenstvo pri výbere bicykla, prilby či treter</li>
+        <li>Odborné nastavenie sedla</li>
+        <li>Montáž doplnkov – svetlá, blatníky, nosiče, košíky, tachometre</li>
+        <li>Servis všetkého tovaru, ktorý predávame – aj korčúľ, kolobežiek či fitness strojov</li>
+        <li>Objednanie dielov, ktoré nemáme na sklade</li>
+        <li>Rozvoz zakúpeného tovaru – napríklad bicykla alebo fitness stroja</li>
+      </ul>
+    </div>
+  </section>
+
+  <CallBand
+    business={sport}
+    title="Dohodnite si servis"
+    text="Zavolajte alebo sa zastavte v predajni v Mestskej tržnici – povieme vám, kedy bude bicykel hotový."
+  />
+
+  <VisitSection business={sport} />
+</ShopLayout>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .split .check-list {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 900px) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

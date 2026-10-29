@@ -1,0 +1,281 @@
+---
+import { ArrowRight, MapPin, Phone } from '@lucide/astro';
+import BaseLayout from '../../../shared/layouts/BaseLayout.astro';
+import Logo from '../../../shared/components/Logo.astro';
+import OpeningHours from '../../../shared/components/OpeningHours.astro';
+import { BIKE_VIEWBOX, CAR_VIEWBOX, bikeMark, carMark } from '../../../shared/brand/marks.mjs';
+import { fullAddress, localBusinessJsonLd, mototechna, sport } from '../../../shared/data/business';
+import { hubSite } from '../../../shared/data/sites';
+
+const shops = [
+  {
+    business: sport,
+    brand: 'sport',
+    variant: 'sport' as const,
+    title: 'Šport a bicykle',
+    text: 'Bicykle, komponenty, oblečenie a športové potreby. Servis bicyklov s rýchloservisom do 24 hodín, brúsenie korčúľ.',
+    cta: 'Bicykle a servis',
+    viewBox: BIKE_VIEWBOX,
+    mark: bikeMark('rgb(255 255 255 / 0.08)', 'rgb(255 255 255 / 0.14)'),
+  },
+  {
+    business: mototechna,
+    brand: 'moto',
+    variant: 'mototechna' as const,
+    title: 'Mototechna – autodiely',
+    text: 'Náhradné diely na všetky typy áut, náradie a záhradná technika. Opravy áut, montáž príslušenstva a pneuservis.',
+    cta: 'Autodiely Mototechna',
+    viewBox: CAR_VIEWBOX,
+    mark: carMark('rgb(255 255 255 / 0.08)', 'rgb(255 255 255 / 0.14)'),
+  },
+];
+
+const title = 'Peleton Handlová – bicykle a servis, autodiely Mototechna';
+const description =
+  'Peleton v Handlovej: predajňa bicyklov, športových potrieb a servis bicyklov (Šport Peleton) a predajňa autodielov s autoservisom (Mototechna Peleton).';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': 'https://peleton.sk/#organization',
+    name: 'Peleton Handlová',
+    url: 'https://peleton.sk/',
+    logo: 'https://peleton.sk/apple-touch-icon.png',
+    subOrganization: [{ '@id': `${sport.url}/#business` }, { '@id': `${mototechna.url}/#business` }],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Peleton Handlová',
+    url: 'https://peleton.sk/',
+    inLanguage: 'sk',
+  },
+  localBusinessJsonLd(sport),
+  localBusinessJsonLd(mototechna),
+];
+---
+
+<BaseLayout site={hubSite} title={title} description={description} jsonLd={jsonLd}>
+  <section class="hub">
+    <div class="container hub__head">
+      <span class="eyebrow">Handlová</span>
+      <h1>Peleton – dve predajne v&nbsp;Handlovej</h1>
+      <p class="lead">Vyberte si, čo hľadáte. Bicykle a šport, alebo diely pre vaše auto.</p>
+    </div>
+
+    <div class="container hub__grid">
+      {
+        shops.map((shop) => (
+          <article class="shop" data-brand={shop.brand}>
+            <svg class="shop__mark" viewBox={shop.viewBox} aria-hidden="true" focusable="false" set:html={shop.mark} />
+            <div class="shop__body">
+              <Logo variant={shop.variant} tone="dark" size="lg" />
+              <h2>{shop.title}</h2>
+              <p class="shop__text">{shop.text}</p>
+
+              <div class="shop__meta">
+                <OpeningHours business={shop.business} tone="dark" compact />
+                <ul class="shop__contact">
+                  <li>
+                    <MapPin size={18} aria-hidden="true" />
+                    {fullAddress(shop.business)}
+                  </li>
+                  <li>
+                    <Phone size={18} aria-hidden="true" />
+                    <a href={`tel:${shop.business.phones[0].tel}`}>{shop.business.phones[0].display}</a>
+                  </li>
+                </ul>
+              </div>
+
+              <a class="btn btn--primary shop__cta" href={`${shop.business.url}/`}>
+                {shop.cta}
+                <ArrowRight size={20} aria-hidden="true" />
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <footer slot="footer" class="hub-footer">
+    <div class="container">© {new Date().getFullYear()} Peleton Handlová</div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .hub {
+    min-height: 100vh;
+    padding-block: clamp(40px, 7vw, 88px) clamp(32px, 5vw, 64px);
+    background:
+      radial-gradient(900px 480px at 15% 0%, rgb(55 179 74 / 0.1), transparent 60%),
+      radial-gradient(900px 480px at 85% 0%, rgb(214 40 40 / 0.1), transparent 60%),
+      var(--ink);
+    color: var(--on-dark);
+  }
+
+  .hub__head {
+    margin-bottom: clamp(28px, 5vw, 56px);
+    text-align: center;
+  }
+
+  .hub__head .eyebrow {
+    color: var(--on-dark-muted);
+  }
+
+  .hub__head .eyebrow::before {
+    background: linear-gradient(90deg, #37b34a 50%, #d62828 50%);
+  }
+
+  .hub__head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.25rem);
+  }
+
+  .hub__head .lead {
+    color: var(--on-dark-muted);
+  }
+
+  .hub__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2.5vw, 28px);
+  }
+
+  .shop {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--ink-3);
+    border-top: 5px solid var(--accent);
+    border-radius: var(--radius-lg);
+    background: var(--ink-2);
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  /* No movement on hover – a lifting card slides away from a cursor at its edge and flickers */
+  .shop:hover {
+    border-color: var(--accent);
+    box-shadow: 0 30px 60px rgb(0 0 0 / 0.35);
+  }
+
+  .shop__mark {
+    position: absolute;
+    right: -12%;
+    bottom: -10%;
+    width: 75%;
+    pointer-events: none;
+  }
+
+  .shop__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: 100%;
+    padding: clamp(24px, 4vw, 44px);
+  }
+
+  .shop h2 {
+    margin: 8px 0 0;
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  }
+
+  .shop__text {
+    margin: 0;
+    color: #d7dbdf;
+    font-size: 1.1rem;
+  }
+
+  .shop__meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4px 28px;
+    padding: 20px 0;
+    border-block: 1px solid var(--ink-3);
+  }
+
+  /* Status pill spans the row, summary and contacts sit side by side below it */
+  .shop__meta > :global(.hours) {
+    display: contents;
+  }
+
+  .shop__meta :global(.hours__status) {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .shop__contact {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 500;
+  }
+
+  .shop__contact li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .shop__contact :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--accent);
+  }
+
+  .shop__contact a {
+    color: var(--on-dark);
+    text-decoration: none;
+  }
+
+  .shop__cta {
+    align-self: flex-start;
+    margin-top: auto;
+  }
+
+  /* The whole card is clickable through the CTA */
+  .shop__cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .shop__contact a {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hub-footer {
+    padding-block: 24px;
+    background: var(--ink);
+    color: var(--on-dark-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    border-top: 1px solid var(--ink-3);
+  }
+
+  @media (max-width: 900px) {
+    .hub__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .shop__meta {
+      grid-template-columns: 1fr;
+    }
+
+    .shop :global(.logo--lg .logo__mark) {
+      width: 76px;
+    }
+
+    .shop :global(.logo--lg .logo__name) {
+      font-size: 2.3rem;
+    }
+  }
+</style>

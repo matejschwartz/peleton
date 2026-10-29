@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../shared/layouts/BaseLayout.astro';
+import NotFound from '../../../shared/components/NotFound.astro';
+import { mototechna, sport } from '../../../shared/data/business';
+import { hubSite } from '../../../shared/data/sites';
+---
+
+<BaseLayout site={hubSite} title="Stránka sa nenašla | Peleton Handlová" description="Hľadaná stránka neexistuje." noindex>
+  <NotFound
+    links={[
+      { href: '/', label: 'Úvod' },
+      { href: `${sport.url}/`, label: 'Šport a bicykle' },
+      { href: `${mototechna.url}/`, label: 'Mototechna' },
+    ]}
+  />
+</BaseLayout>

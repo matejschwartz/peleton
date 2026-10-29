@@ -1,0 +1,67 @@
+---
+import { Phone } from '@lucide/astro';
+import SocialIcon from './SocialIcon.astro';
+import type { Business } from '../data/business';
+
+interface Props {
+  business: Business;
+  title: string;
+  text: string;
+}
+
+const { business, title, text } = Astro.props;
+---
+
+<section class="band">
+  <div class="container band__inner">
+    <div>
+      <h2>{title}</h2>
+      <p>{text}</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn--dark" href={`tel:${business.phones[0].tel}`}>
+        <Phone size={20} aria-hidden="true" />
+        {business.phones[0].display}
+      </a>
+      {
+        business.messenger && (
+          <a class="btn btn--ghost" href={business.messenger} target="_blank" rel="noopener">
+            <SocialIcon name="messenger" size={20} />
+            Messenger
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .band {
+    background: var(--accent);
+    color: var(--on-accent);
+    padding-block: clamp(36px, 5vw, 56px);
+  }
+
+  .band__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .band h2 {
+    margin-bottom: 0.2em;
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  }
+
+  .band p {
+    margin: 0;
+    max-width: 620px;
+    font-size: 1.1rem;
+  }
+
+  .band .btn--ghost:hover {
+    background: rgb(0 0 0 / 0.08);
+  }
+</style>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import type { SiteConfig } from '../data/sites';
+
+interface Props {
+  site: SiteConfig;
+  title: string;
+  description: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { site, ...rest } = Astro.props;
+---
+
+<BaseLayout site={site} {...rest}>
+  <SiteHeader slot="header" site={site} />
+  <slot />
+  <SiteFooter slot="footer" site={site} />
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import PageHero from '../../../shared/components/PageHero.astro';
+import VisitSection from '../../../shared/components/VisitSection.astro';
+import { localBusinessJsonLd, mototechna } from '../../../shared/data/business';
+import { breadcrumbJsonLd, contactDescription } from '../../../shared/data/seo';
+import { mototechnaSite } from '../../../shared/data/sites';
+
+const title = 'Kontakt a otváracie hodiny | Mototechna Peleton Handlová';
+const description = contactDescription(mototechna);
+---
+
+<ShopLayout
+  site={mototechnaSite}
+  title={title}
+  description={description}
+  jsonLd={[
+    localBusinessJsonLd(mototechna),
+    breadcrumbJsonLd(mototechna.url, [
+      { name: 'Úvod', path: '/' },
+      { name: 'Kontakt', path: '/kontakt/' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Kontakt"
+    title="Kontakt a otváracie hodiny"
+    lead="Nájdete nás na ulici ČSA v Handlovej. Zavolajte, napíšte e-mail alebo sa rovno zastavte."
+    crumbs={[{ href: '/', label: 'Úvod' }]}
+  />
+  <VisitSection business={mototechna} title="Kde nás nájdete" />
+</ShopLayout>

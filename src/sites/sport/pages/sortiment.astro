@@ -1,0 +1,39 @@
+---
+import ShopLayout from '../../../shared/layouts/ShopLayout.astro';
+import PageHero from '../../../shared/components/PageHero.astro';
+import CategoryGroups from '../../../shared/components/CategoryGroups.astro';
+import CallBand from '../../../shared/components/CallBand.astro';
+import { sport } from '../../../shared/data/business';
+import { breadcrumbJsonLd } from '../../../shared/data/seo';
+import { sportSite } from '../../../shared/data/sites';
+import { groups } from '../data/sortiment';
+
+const title = 'Bicykle, komponenty a športové potreby | Peleton Handlová';
+const description =
+  'Bicykle Merida, Giant, Focus a ďalšie, plášte Schwalbe a Continental, komponenty Shimano a SRAM, prilby, tretry, svetlá, korčule, fitness a športová výživa v predajni Peleton v Handlovej.';
+---
+
+<ShopLayout
+  site={sportSite}
+  title={title}
+  description={description}
+  jsonLd={breadcrumbJsonLd(sport.url, [
+    { name: 'Úvod', path: '/' },
+    { name: 'Sortiment', path: '/sortiment/' },
+  ])}
+>
+  <PageHero
+    eyebrow="Sortiment"
+    title="Bicykle, komponenty a športové potreby"
+    lead="Prehľad toho, čo nájdete v predajni. Ponuka sa mení podľa sezóny – ak niečo nevidíte, zavolajte, radi to pre vás objednáme."
+    crumbs={[{ href: '/', label: 'Úvod' }]}
+  />
+
+  <CategoryGroups groups={groups} />
+
+  <CallBand
+    business={sport}
+    title="Hľadáte konkrétny diel?"
+    text="Ak hľadaný tovar nemáme v predajni, zoženieme ho čo najrýchlejšie. Stačí zavolať alebo napísať."
+  />
+</ShopLayout>

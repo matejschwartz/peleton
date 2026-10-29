@@ -1,0 +1,126 @@
+---
+import { MapPin, Navigation } from '@lucide/astro';
+import { type Business, fullAddress, mapsDirectionsUrl, mapsEmbedUrl } from '../data/business';
+
+interface Props {
+  business: Business;
+}
+
+const { business } = Astro.props;
+---
+
+<div class="map" data-map-src={mapsEmbedUrl(business)} data-map-title={`Mapa – ${business.name}`}>
+  <div class="map__placeholder">
+    <div class="map__grid" aria-hidden="true"></div>
+    <div class="map__pin" aria-hidden="true"><MapPin size={34} /></div>
+    <p class="map__address">
+      <strong>{business.name}</strong><br />
+      {fullAddress(business)}
+    </p>
+    <div class="btn-row map__actions">
+      <button type="button" class="btn btn--dark" data-map-load>Zobraziť mapu</button>
+      <a class="btn btn--primary" href={mapsDirectionsUrl(business)} target="_blank" rel="noopener">
+        <Navigation size={18} aria-hidden="true" />
+        Navigovať
+      </a>
+    </div>
+    <p class="map__note">Mapa sa načíta zo služby Google Maps až po kliknutí.</p>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.map').forEach((map) => {
+    map.querySelector('[data-map-load]')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = map.dataset.mapSrc!;
+      iframe.title = map.dataset.mapTitle!;
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      iframe.allowFullscreen = true;
+      map.replaceChildren(iframe);
+      map.classList.add('is-loaded');
+    });
+  });
+</script>
+
+<style>
+  .map {
+    position: relative;
+    min-height: 380px;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #e9e5dc;
+    border: 1px solid var(--line);
+  }
+
+  .map :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .map__placeholder {
+    position: relative;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 14px;
+    height: 100%;
+    min-height: 380px;
+    padding: 32px 20px;
+    text-align: center;
+  }
+
+  /* Abstract street pattern */
+  .map__grid {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(118deg, transparent calc(50% - 9px), #fff calc(50% - 9px), #fff calc(50% + 9px), transparent calc(50% + 9px)),
+      linear-gradient(24deg, transparent calc(62% - 6px), #fff calc(62% - 6px), #fff calc(62% + 6px), transparent calc(62% + 6px)),
+      repeating-linear-gradient(90deg, transparent 0 86px, #f7f5f0 86px 90px),
+      repeating-linear-gradient(0deg, transparent 0 66px, #f7f5f0 66px 70px),
+      #e8e4da;
+  }
+
+  .map__placeholder > :not(.map__grid) {
+    position: relative;
+  }
+
+  .map__pin {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: var(--accent);
+    color: var(--on-accent);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .map__pin :global(svg) {
+    transform: rotate(45deg);
+  }
+
+  .map__address {
+    margin: 6px 0 0;
+    padding: 10px 18px;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.9);
+    font-size: 1.05rem;
+  }
+
+  .map__actions {
+    justify-content: center;
+  }
+
+  .map__note {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>

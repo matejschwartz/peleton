@@ -1,0 +1,49 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import type { NavItem } from '../data/sites';
+
+interface Props {
+  links: NavItem[];
+}
+
+const { links } = Astro.props;
+---
+
+<section class="section notfound">
+  <div class="container">
+    <span class="eyebrow">Chyba 404</span>
+    <h1>Táto stránka neexistuje</h1>
+    <p class="lead">Stránka sa mohla presunúť – web sme nedávno prerobili. Skúste niektorý z odkazov nižšie.</p>
+    <ul class="notfound__links">
+      {
+        links.map((l) => (
+          <li>
+            <a class="btn btn--dark" href={l.href}>
+              {l.label} <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .notfound {
+    min-height: 50vh;
+  }
+
+  .notfound .lead {
+    max-width: 620px;
+    color: var(--muted);
+  }
+
+  .notfound__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

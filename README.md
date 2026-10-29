@@ -40,6 +40,9 @@ Astro runs only one dev server per project – stop one before starting another.
 
 ## Deployment
 
+The hosting cannot run the build, so `dist/` is committed. Run `npm run build` before every
+commit that changes the sources, so the committed output stays in sync.
+
 Upload the **contents** of each output folder to the web root of its domain:
 
 ```

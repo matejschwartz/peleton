@@ -110,7 +110,7 @@ export const mototechna: Business = {
   facebook: 'https://www.facebook.com/SportPeleton',
   hours: [
     ...weekdays('07:30', '16:30'),
-    { day: 'Sa', label: 'Sobota', opens: '07:30', closes: '11:30' },
+    { day: 'Sa', label: 'Sobota', opens: '08:00', closes: '12:00' },
     { day: 'Su', label: 'Nedeľa', note: 'Zatvorené' },
   ],
   foundingDate: '2008-01-01',
